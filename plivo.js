@@ -1,9 +1,8 @@
-//module.exports = function() {
-//Get required modules
+//Get required modules.....
 var util = require('util');
 var Request = require('request');
 var qs = require('querystring');
-var xmlBuilder = require('xmlbuilder');   // added ...
+var xmlBuilder = require('xmlbuilder');   
 var doc = xmlBuilder.create();
 
 var plivo = {};
@@ -16,8 +15,7 @@ plivo.options.authToken = '';
 
 var UserAgent = 'NodePlivo';
 
-//Define a new error object - A string is not an error, thanks Guillermo: 
-//http://www.devthought.com/2011/12/22/a-string-is-not-an-error/
+//Define a new error object..... 
 function PlivoError (msg) {
   Error.call(this);
   Error.captureStackTrace(this, arguments.callee);
@@ -28,10 +26,10 @@ function PlivoError (msg) {
 PlivoError.prototype.__proto__ = Error.prototype;
 
 
-//Main request function
+//Main request function.....
 var request = function (action, method, params, callback) {
   var err = null;
-  var path = 'https://' + plivo.options.host + '/' +				  //https added
+  var path = 'https://' + plivo.options.host + '/' +				
 			plivo.options.version + '/Account/' + 
 			plivo.options.authId + '/' + action ;
 
@@ -90,8 +88,8 @@ var request = function (action, method, params, callback) {
 };
 
 
-//Calls
-plivo.make_call = function (params, callback) {   // changed call to make_call
+//Calls.....
+plivo.make_call = function (params, callback) {   
 	var action = 'Call/';
 	var method = 'POST';
 	
@@ -129,7 +127,7 @@ plivo.hangup_call = function (params, callback) {
 	});
 };
 
-plivo.record = function (params, callback) {   // changed record_start to record
+plivo.record = function (params, callback) {  
 	var action = 'Call/' + params['call_uuid'] + '/Record/';
 	delete params.call_uuid;
 	var method = 'POST';
@@ -202,7 +200,7 @@ plivo.hangup_request = function (params, callback) {
 
 // Conferences......
 
-plivo.get_live_conferences = function (params, callback) { // changed live_conferences to get_live_conferences
+plivo.get_live_conferences = function (params, callback) { 
 	var action = 'Conference/';
 	var method = 'GET';
 
@@ -211,7 +209,7 @@ plivo.get_live_conferences = function (params, callback) { // changed live_confe
 	});
 };
 
-plivo.get_live_conference = function (params, callback) {		// changed live_conferences to get_live_conference
+plivo.get_live_conference = function (params, callback) {		
 	var action = 'Conference/' + params['conference_id'] + '/';
 	delete params.conference_id;
 	var method = 'GET';
@@ -221,7 +219,7 @@ plivo.get_live_conference = function (params, callback) {		// changed live_confe
 	});
 };
 
-plivo.hangup_all_conferences = function (params, callback) { // changed hangup_all_conference to hangup_all_conferences
+plivo.hangup_all_conferences = function (params, callback) { 
 	var action = 'Conference/';
 	var method = 'DELETE';
 
@@ -240,7 +238,7 @@ plivo.hangup_conference = function (params, callback) {
 	});
 };
 
-plivo.hangup_conference_member = function (params, callback) { // changed hangup_member_conference to hangup_conference_member
+plivo.hangup_conference_member = function (params, callback) { 
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/';
 	delete params.conference_id;
@@ -252,7 +250,7 @@ plivo.hangup_conference_member = function (params, callback) { // changed hangup
 	});
 };
 
-plivo.play_conference_member = function (params, callback) {   //  changed play_member_conference to play_conference_member
+plivo.play_conference_member = function (params, callback) {   
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Play/';
 	delete params.conference_id;
@@ -264,7 +262,7 @@ plivo.play_conference_member = function (params, callback) {   //  changed play_
 	});
 };
 
-plivo.stop_play_conference_member = function (params, callback) {	//	changed stop_play_member_conference to stop_play_conference_member
+plivo.stop_play_conference_member = function (params, callback) {	
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Play';
 	delete params.conference_id;
@@ -276,7 +274,7 @@ plivo.stop_play_conference_member = function (params, callback) {	//	changed sto
 	});
 };
 
-plivo.speak_conference_member = function (params, callback) { //  changed speak_member_conference to speak_conference_member
+plivo.speak_conference_member = function (params, callback) { 
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Speak/';
 	delete params.conference_id;
@@ -288,7 +286,7 @@ plivo.speak_conference_member = function (params, callback) { //  changed speak_
 	});
 };
 
-plivo.deaf_conference_member = function (params, callback) {  //  changed deaf_member_conference to deaf_conference_member
+plivo.deaf_conference_member = function (params, callback) {  
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Deaf/';
 	delete params.conference_id;
@@ -300,7 +298,7 @@ plivo.deaf_conference_member = function (params, callback) {  //  changed deaf_m
 	});
 };
 
-plivo.undeaf_conference_member = function (params, callback) {	//	changed undeaf_member_conference to undeaf_conference_member
+plivo.undeaf_conference_member = function (params, callback) {	
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Deaf/';
 	delete params.conference_id;
@@ -312,7 +310,7 @@ plivo.undeaf_conference_member = function (params, callback) {	//	changed undeaf
 	});
 };
 
-plivo.mute_conference_member = function (params, callback) {  //  changed mute_member_conference to mute_conference_member
+plivo.mute_conference_member = function (params, callback) {  
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Mute/';
 	delete params.conference_id;
@@ -324,7 +322,7 @@ plivo.mute_conference_member = function (params, callback) {  //  changed mute_m
 	});
 };
 
-plivo.unmute_conference_member = function (params, callback) { //  changed unmute_member_conference to unmute_conference_member
+plivo.unmute_conference_member = function (params, callback) { 
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Mute/';
 	delete params.conference_id;
@@ -336,7 +334,7 @@ plivo.unmute_conference_member = function (params, callback) { //  changed unmut
 	});
 };
 
-plivo.kick_conference_member = function (params, callback) {  //  changed kick_member_conference to kick_conference_member
+plivo.kick_conference_member = function (params, callback) {  
 	var action = 'Conference/' + params['conference_id'] + '/Member/' +
 					params['member_id'] + '/Kick/';
 	delete params.conference_id;
@@ -369,9 +367,9 @@ plivo.stop_record_conference = function (params, callback) {
 };
 
 
-// Accounts
+// Accounts.....
 
-plivo.get_account = function (params, callback) {  // changed account to get_account
+plivo.get_account = function (params, callback) {  
 	var action = '';
 	var method = 'GET';
 
@@ -389,7 +387,7 @@ plivo.modify_account = function (params, callback) {
 	});
 };
 
-plivo.get_subaccounts = function (params, callback) {  // changed subaccounts to get_subaccounts
+plivo.get_subaccounts = function (params, callback) {  
 	var action = 'Subaccount/';
 	var method = 'GET';
 
@@ -398,7 +396,7 @@ plivo.get_subaccounts = function (params, callback) {  // changed subaccounts to
 	});
 };
 
-plivo.get_subaccount = function (params, callback) {  // changed subaccount to get_subaccount
+plivo.get_subaccount = function (params, callback) {  
 	var action = 'Subaccount/' + params['subauth_id'] + '/';
 	delete params.subauth_id;
 	var method = 'GET';
@@ -408,7 +406,6 @@ plivo.get_subaccount = function (params, callback) {  // changed subaccount to g
 	});
 };
 
-// Adding create_subaccount function
 plivo.create_subaccount = function (params, callback) {  
 	var action = 'Subaccount/';
 	var method = 'POST';
@@ -438,9 +435,8 @@ plivo.delete_subaccount = function (params, callback) {
 	});
 };
 
-// Applications
+// Applications.....
 
-// adding get_applications
 plivo.get_applications = function (params, callback) { 
 	var action = 'Application/';
 	var method = 'GET';
@@ -450,7 +446,7 @@ plivo.get_applications = function (params, callback) {
 	});
 };
 
-plivo.get_application = function (params, callback) {  // changed application to get_application and added app_id
+plivo.get_application = function (params, callback) {  
 	var action = 'Application/' + params['app_id'] + '/';
 	var method = 'GET';
 
@@ -486,7 +482,7 @@ plivo.delete_application = function (params, callback) {
 	});
 };
 
-// Recordings
+// Recordings.....
 plivo.get_recordings = function (params, callback) {
 	var action = 'Recording/';
 	var method = 'GET';
@@ -505,7 +501,7 @@ plivo.get_recordings = function (params, callback) {
 	});
 };
 
-// Endpoints
+// Endpoints.....
 
 plivo.get_endpoints = function (params, callback) {
 	var action = 'Endpoint/';
@@ -552,7 +548,7 @@ plivo.delete_endpoint = function (params, callback) {
 	});
 };
 
-// Numbers
+// Numbers.....
 plivo.get_numbers = function (params, callback) {
 	var action = 'Number/';
 	var method = 'GET';
@@ -616,7 +612,7 @@ plivo.edit_rented_number = function (params, callback) {
 	});
 };
 
-// Message
+// Message.....
 plivo.send_message = function (params, callback) {
 	var action = 'Message/';
 	var method = 'POST';
@@ -644,9 +640,7 @@ plivo.get_message = function (params, callback) {
 	});
 };
 
-//TODO: Program XML response functions so that they can be chained
-//var respxml = xml.begin('Response');
-
+// XML Generation.....
 GLOBAL.Docs = doc.begin('Response');
 //console.log(doc.toString({ pretty: true }));
 // Decalaring a class Element
