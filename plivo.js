@@ -673,8 +673,8 @@ Element.prototype = {
      		elem.att(keys[i],attributes[keys[i]])
      	}	
      	elem.text(body)
-     	var nestelem = elem.ele('Play')
-		nestelem.text('Hi in Play')
+     	var nestelem = elem.ele('Test')
+		nestelem.text('Hi in Test')
 		console.log('In Element Function'+'\n'+elem);
     	return elem.toString({ pretty: true });
 	},
