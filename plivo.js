@@ -644,7 +644,7 @@ plivo.get_message = function (params, callback) {
 GLOBAL.Docs = doc.begin('Response');
 //console.log(doc.toString({ pretty: true }));
 // Decalaring a class Element
-function Element() {
+function Element(Object) {
 	nestables = [];
 	valid_attributes = [];
 	
@@ -653,10 +653,24 @@ function Element() {
 Element.prototype = {
 
 	init : function(name, body, attributes, valid_attributes) {
-		this.attributes = [];
+	//	this.attributes = [];
 		this.name = name;
 		this.body = body;
-		var elem = Docs.ele(this.name);
+		this.nest = 0;
+		this.elem = '';
+		this.elem1 = '';
+		if (this.nest ==0) {
+			this.elem = Docs.ele(this.name)
+		}
+		else {
+			this.elem1 = this.elem.ele(this.name)
+		}
+	//	var elem = Docs.ele(this.name);
+		console.log(name);
+		console.log(attributes);
+		console.log(this.body);
+		
+		console.log(this.valid_attributes);
 		var keys = Object.keys(attributes);
 		 
 		for (var i=0; i<keys.length; i++) {
@@ -664,36 +678,67 @@ Element.prototype = {
 				console.log('Error');
 			return PlivoError('Not a valid attribute, %s', keys[i]);
 			}
-     		elem.att(keys[i],attributes[keys[i]])
+     		this.elem.att(keys[i],attributes[keys[i]])
      	}	
-     	elem.text(body)
-     	var nestelem = elem.ele('Test')
-		nestelem.text('Hi in Test')
-		console.log('In Element Function'+'\n'+elem);
-    	return elem.toString({ pretty: true });
+     	this.elem.text(body)
+    // 	var nestelem = elem.ele('Play')
+	//	nestelem.text('Hi in Play')
+	//	console.log('In Element Function'+'\n'+GLOBAL.elem);
+		console.log(''+this.elem);
+    //	return Docs.toString({ pretty: true });
+   	//	return this.name;
 	},
 
-	add: function(elem) {
-		console.log('To XML');
+	add: function(name) {
+	//	console.log(Element+'To XML');
+	//	console.log(Element.element);
 	//	var element = ElementXml(name, body, valid_attributes,  params, nestables);
 	//	console.log(element);
-		return new Element;
+	//	return this.nest(name);
+		return new Element();
 	},
 	addSpeak : function(body, attributes) {
-		var speak = new Speak();
+		var speak = new Speak(Element);
+	//	var speak = Object.create(Speak(Element));
 		return Element.prototype.add(speak.init(speak.element,body, attributes));
 	},
 	addPlay: function(body, params) {
 		/*GLOBAL.xmlPlay = Play(body, params);
 		console.log(xmlPlay+'\n'+'In addPlay');*/
 		return Element.prototype;
+	},
+
+	addGetDigits : function(attributes) {
+		console.log(attributes);
+		var getDigits = new GetDigits(Element);
+		return Element.prototype.add(getDigits.init(getDigits.element, attributes));
 	}
+	/*nest: function(name) {
+		elem = elem.ele(name);
+		return new Element();
+	//	addSpeak();
+	}*/
 }
 
-function Speak() {
+function Nestable(Object) {
+
+};
+
+Nestable.prototype = {
+
+	/*addSpeak : function(body, attributes) {
+		var speak = new Speak(Element);
+		return Element.prototype.add(speak.init(speak.element,body, attributes));
+	}
+*/
+
+
+};
+
+function Speak(Element) {
 	this.element = 'Speak';
 	this.valid_attributes = ['voice', 'language', 'loop'];
-    this.nestables = ['Play'];
+    this.nestables = [];
      
 }
 
@@ -707,6 +752,22 @@ Speak.prototype.init = function( body, attributes) {
 	
 };
 
+
+function GetDigits(Element) {
+	this.element = 'GetDigits';
+	this.valid_attributes = ['action', 'method', 'timeout', 'digitTimeout', 'finishOnKey',
+                        'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
+                        'playBeep', 'redirect', 'digitTimeout'];
+    this.nestables = ['Speak','Play','Wait'];
+ 	this.body = null;
+}
+
+GetDigits.prototype.init = function(attributes) {
+	
+	Element.prototype.init(this.element, "ABCD", attributes, valid_attributes);
+	
+};
+
 var Response = function() {
 	this.nestables = ['Speak', 'Play', 'GetDigits', 'Record', 'Dial', 'Message',
 			'Redirect', 'Wait', 'Hangup', 'PreAnswer', 'Conference', 'DTMF'];
@@ -715,7 +776,10 @@ var Response = function() {
 };
 
 util.inherits(Response, Element);
+util.inherits(GetDigits, Element);
 util.inherits(Speak, Element);
+
+
 
 
 exports.Response = function() {
