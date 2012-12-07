@@ -642,36 +642,30 @@ plivo.get_message = function (params, callback) {
 
 // XML Generation.....
 GLOBAL.Docs = doc.begin('Response');
-//console.log(doc.toString({ pretty: true }));
+
 // Decalaring a class Element
 function Element(Object) {
 	nestables = [];
 	valid_attributes = [];
-	
+	nestName = '';
 };
 
 Element.prototype = {
 
 	init : function(name, body, attributes, valid_attributes) {
-	//	this.attributes = [];
 		this.name = name;
 		this.body = body;
-		this.nest = 0;
 		this.elem = '';
-		this.elem1 = '';
-		if (this.nest ==0) {
-			this.elem = Docs.ele(this.name)
-		}
-		else {
-			this.elem1 = this.elem.ele(this.name)
-		}
-	//	var elem = Docs.ele(this.name);
-		console.log(name);
-		console.log(attributes);
-		console.log(this.body);
-		
-		console.log(this.valid_attributes);
-		var keys = Object.keys(attributes);
+	
+	   	if (nestables.indexOf(this.name)>-1) {
+       		elem = Docs.ele(nestName)
+			this.elem = elem.ele(this.name)
+     	}
+     	else {
+       		this.elem = Docs.ele(this.name)
+       	}
+
+     	var keys = Object.keys(attributes);
 		 
 		for (var i=0; i<keys.length; i++) {
 			if (this.valid_attributes.indexOf(keys[i]) == -1) {
@@ -681,65 +675,35 @@ Element.prototype = {
      		this.elem.att(keys[i],attributes[keys[i]])
      	}	
      	this.elem.text(body)
-    // 	var nestelem = elem.ele('Play')
-	//	nestelem.text('Hi in Play')
-	//	console.log('In Element Function'+'\n'+GLOBAL.elem);
-		console.log(''+this.elem);
-    //	return Docs.toString({ pretty: true });
-   	//	return this.name;
+    // 	this.elem.up()
 	},
 
 	add: function(name) {
-	//	console.log(Element+'To XML');
-	//	console.log(Element.element);
-	//	var element = ElementXml(name, body, valid_attributes,  params, nestables);
-	//	console.log(element);
-	//	return this.nest(name);
-		return new Element();
+		console.log('in add');
 	},
 	addSpeak : function(body, attributes) {
 		var speak = new Speak(Element);
-	//	var speak = Object.create(Speak(Element));
-		return Element.prototype.add(speak.init(speak.element,body, attributes));
+		speak.init(speak.element,body, attributes);
+		return speak;
 	},
 	addPlay: function(body, params) {
-		/*GLOBAL.xmlPlay = Play(body, params);
-		console.log(xmlPlay+'\n'+'In addPlay');*/
 		return Element.prototype;
 	},
-
 	addGetDigits : function(attributes) {
-		console.log(attributes);
+		var body = '';
 		var getDigits = new GetDigits(Element);
-		return Element.prototype.add(getDigits.init(getDigits.element, attributes));
+		getDigits.init(getDigits.element, body, attributes);
+		return getDigits;
+	},
+	toXML : function() {
+		console.log(''+Docs.toString({ pretty: true }));
 	}
-	/*nest: function(name) {
-		elem = elem.ele(name);
-		return new Element();
-	//	addSpeak();
-	}*/
 }
 
-function Nestable(Object) {
-
-};
-
-Nestable.prototype = {
-
-	/*addSpeak : function(body, attributes) {
-		var speak = new Speak(Element);
-		return Element.prototype.add(speak.init(speak.element,body, attributes));
-	}
-*/
-
-
-};
 
 function Speak(Element) {
 	this.element = 'Speak';
 	this.valid_attributes = ['voice', 'language', 'loop'];
-    this.nestables = [];
-     
 }
 
 Speak.prototype.init = function( body, attributes) {
@@ -749,7 +713,6 @@ Speak.prototype.init = function( body, attributes) {
 	}
 	
 	Element.prototype.init(this.element, body, attributes, valid_attributes);
-	
 };
 
 
@@ -758,13 +721,12 @@ function GetDigits(Element) {
 	this.valid_attributes = ['action', 'method', 'timeout', 'digitTimeout', 'finishOnKey',
                         'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
                         'playBeep', 'redirect', 'digitTimeout'];
-    this.nestables = ['Speak','Play','Wait'];
- 	this.body = null;
+    nestables = ['Speak','Play','Wait'];
+    nestName = this.element;
 }
 
-GetDigits.prototype.init = function(attributes) {
-	
-	Element.prototype.init(this.element, "ABCD", attributes, valid_attributes);
+GetDigits.prototype.init = function(body, attributes) {
+	Element.prototype.init(this.element, body, attributes, valid_attributes);
 	
 };
 
@@ -778,9 +740,6 @@ var Response = function() {
 util.inherits(Response, Element);
 util.inherits(GetDigits, Element);
 util.inherits(Speak, Element);
-
-
-
 
 exports.Response = function() {
 	return Response;
