@@ -701,6 +701,7 @@ Response.prototype = {
 	},
 	addDial : function(attributes) {
 		var body = '';
+		nestables = this.nestables;
 		var dial = new Dial(Response);
 		dial.init(dial.element, body, attributes);
 		elem=dial.elem;
@@ -708,6 +709,7 @@ Response.prototype = {
 	},
 	addGetDigits : function(attributes) {
 		var body = '';
+		nestables = this.nestables;
 		var getDigits = new GetDigits(Response);
 		getDigits.init(getDigits.element, body, attributes);
 		elem=getDigits.elem;
@@ -735,6 +737,7 @@ Response.prototype = {
 	addPreAnswer : function(body, attributes) {
 		var body = '';
 		var attributes = [];
+		nestables = this.nestables;
 		var preAnswer = new PreAnswer(Response);
 		preAnswer.init(preAnswer.element,body, attributes);
 		elem=preAnswer.elem;
