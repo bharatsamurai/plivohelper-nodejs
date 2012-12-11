@@ -644,21 +644,23 @@ plivo.get_message = function (params, callback) {
 GLOBAL.Docs = doc.begin('Response');
 
 // Decalaring a class Element
-function Element(Object) {
-	nestables = [];
+function Response() {
+	this.nestables = [];
 	valid_attributes = [];
 	nestName = '';
+	elem = '';
+	errmsg = '';
 };
 
-Element.prototype = {
+Response.prototype = {
 
 	init : function(name, body, attributes, valid_attributes) {
 		this.name = name;
 		this.body = body;
 		this.elem = '';
-	
+
 	   	if (nestables.indexOf(this.name)>-1) {
-       		elem = Docs.ele(nestName)
+    		this.elem.parent = elem;
 			this.elem = elem.ele(this.name)
      	}
      	else {
@@ -669,85 +671,298 @@ Element.prototype = {
 		 
 		for (var i=0; i<keys.length; i++) {
 			if (this.valid_attributes.indexOf(keys[i]) == -1) {
-				console.log('Error');
-			return PlivoError('Not a valid attribute, %s', keys[i]);
+				errmsg = 'Not a valid attribute : "' +  keys[i] + '"  for "' + this.name + '" Element';
+				return console.log('Not a valid attribute, %s', keys[i]);
 			}
      		this.elem.att(keys[i],attributes[keys[i]])
      	}	
      	this.elem.text(body)
-    // 	this.elem.up()
 	},
 
-	add: function(name) {
-		console.log('in add');
+	addConference: function(body, attributes) {
+		nestables = this.nestables;
+		var conference = new Conference(Response);
+		conference.init(conference.element,body, attributes);
+		return conference;
 	},
-	addSpeak : function(body, attributes) {
-		var speak = new Speak(Element);
-		speak.init(speak.element,body, attributes);
-		return speak;
-	},
-	addPlay: function(body, params) {
-		return Element.prototype;
+	addDial : function(attributes) {
+		var body = '';
+		var dial = new Dial(Response);
+		dial.init(dial.element, body, attributes);
+		elem=dial.elem;
+		return dial;
 	},
 	addGetDigits : function(attributes) {
 		var body = '';
-		var getDigits = new GetDigits(Element);
+		var getDigits = new GetDigits(Response);
 		getDigits.init(getDigits.element, body, attributes);
+		elem=getDigits.elem;
 		return getDigits;
 	},
+	addHangup : function(attributes) {
+		var body = '';
+		nestables = this.nestables;
+		var hangup = new Hangup(Response);
+		hangup.init(hangup.element, body, attributes);
+		return hangup;
+	},
+	addMessage: function(body, attributes) {
+		nestables = this.nestables;
+		var message = new Message(Response);
+		message.init(message.element,body, attributes);
+		return message;
+	},
+	addPlay: function(body, attributes) {
+		nestables = this.nestables;
+		var play = new Play(Response);
+		play.init(play.element,body, attributes);
+		return play;
+	},
+	addPreAnswer : function(body, attributes) {
+		var body = '';
+		var attributes = [];
+		var preAnswer = new PreAnswer(Response);
+		preAnswer.init(preAnswer.element,body, attributes);
+		elem=preAnswer.elem;
+		return preAnswer;
+	},
+	addRecord : function(body, attributes) {
+		var body = '';
+		nestables = this.nestables;
+		var record = new Record(Response);
+		record.init(record.element,body, attributes);
+		return record;
+	},
+	addRedirect : function(body, attributes) {
+		nestables = this.nestables;
+		var redirect = new Redirect(Response);
+		redirect.init(redirect.element,body, attributes);
+		return redirect;
+	},
+	addSpeak : function(body, attributes) {
+		nestables = this.nestables;
+		var speak = new Speak(Response);
+		speak.init(speak.element,body, attributes);
+		return speak;
+	},
+	addWait : function(attributes) {
+		var body = '';
+		nestables = this.nestables;
+		var wait = new Wait(Response);
+		wait.init(wait.element, body, attributes);
+		return wait;
+	},
+	addDTMF : function(body) {
+		var attributes = [];
+		nestables = this.nestables;
+		var dtmf = new DTMF(Response);
+		dtmf.init(dtmf.element, body, attributes);
+		return dtmf;
+	},
 	toXML : function() {
-		console.log(''+Docs.toString({ pretty: true }));
+		if (errmsg) {	return errmsg;
+		}
+		else {	return Docs.toString({ pretty: true });
+		}
 	}
 }
 
-
-function Speak(Element) {
-	this.element = 'Speak';
-	this.valid_attributes = ['voice', 'language', 'loop'];
+function Conference(Response) {
+	this.element = 'Conference';
+	this.valid_attributes = ['muted','beep','startConferenceOnEnter', 'endConferenceOnExit',
+						'waitSound','enterSound', 'exitSound', 'timeLimit', 'hangupOnStar', 
+						'maxMembers', 'record', 'recordFileFormat', 'action', 'method', 
+						'redirect', 'digitsMatch', 'callbackUrl', 'callbackMethod',
+                        'stayAlone', 'floorEvent', 'transcriptionType', 'transcriptionUrl',
+                        'transcriptionMethod'];
+	this.nestables = nestables;
 }
 
-Speak.prototype.init = function( body, attributes) {
-
+Message.prototype.init = function( body, attributes) {
 	if (body == null) {
 		PlivoError('No text set for %s', this.name);
 	}
-	
-	Element.prototype.init(this.element, body, attributes, valid_attributes);
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
 };
 
+function Number(Response) {
+	this.element = 'Number';
+	this.valid_attributes = ['sendDigits', 'sendOnPreanswer'];
+	this.nestables = nestables;
+}
 
-function GetDigits(Element) {
+Number.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+function User(Response) {
+	this.element = 'User';
+	this.valid_attributes = ['sendDigits', 'sendOnPreanswer', 'sipHeaders', 'webrtc'];
+	this.nestables = nestables;
+}
+
+User.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function Dial(Response) {
+	this.element = 'Dial';
+	this.valid_attributes = ['action','method','timeout','hangupOnStar', 'timeLimit',
+						'callerId', 'callerName', 'confirmSound', 'dialMusic', 
+						'confirmKey', 'redirect', 'callbackUrl', 'callbackMethod', 
+						'digitsMatch', 'sipHeaders'];
+    this.nestables = ['Number', 'User'];
+}
+
+Dial.prototype.init = function(body, attributes) {
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+	
+};
+
+function GetDigits(Response) {
 	this.element = 'GetDigits';
 	this.valid_attributes = ['action', 'method', 'timeout', 'digitTimeout', 'finishOnKey',
                         'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
                         'playBeep', 'redirect', 'digitTimeout'];
-    nestables = ['Speak','Play','Wait'];
-    nestName = this.element;
+    this.nestables = ['Speak','Play','Wait'];
 }
 
 GetDigits.prototype.init = function(body, attributes) {
-	Element.prototype.init(this.element, body, attributes, valid_attributes);
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
 	
 };
 
-var Response = function() {
-	this.nestables = ['Speak', 'Play', 'GetDigits', 'Record', 'Dial', 'Message',
-			'Redirect', 'Wait', 'Hangup', 'PreAnswer', 'Conference', 'DTMF'];
-	this.valid_attributes = [];
+function Hangup(Response) {
+	this.element = 'Hangup';
+	this.valid_attributes = ['schedule', 'reason'];
+	this.nestables = nestables;
+}
 
+Hangup.prototype.init = function( body, attributes) {
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
 };
 
-util.inherits(Response, Element);
-util.inherits(GetDigits, Element);
-util.inherits(Speak, Element);
+function Message(Response) {
+	this.element = 'Message';
+	this.valid_attributes = ['src', 'dst', 'type', 'callbackUrl', 'callbackMethod'];
+	this.nestables = nestables;
+}
+
+Message.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function Play(Response) {
+	this.element = 'Play';
+	this.valid_attributes = ['loop'];
+	this.nestables = nestables;
+}
+
+Play.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function PreAnswer(Response) {
+	this.element = 'PreAnswer';
+	this.valid_attributes = [];
+    this.nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message', 'DTMF'];
+}
+
+PreAnswer.prototype.init = function(body, attributes) {
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+	
+};
+
+function Record(Response) {
+	this.element = 'Record';
+	this.valid_attributes = ['action', 'method', 'timeout','finishOnKey',
+                        'maxLength', 'playBeep', 'recordSession',
+                        'startOnDialAnswer', 'redirect', 'fileFormat',
+                        'callbackUrl', 'callbackMethod', 'transcriptionType', 
+                        'transcriptionUrl', 'transcriptionMethod'];
+	this.nestables = nestables;
+}
+
+Record.prototype.init = function( body, attributes) {
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function Redirect(Response) {
+	this.element = 'Redirect';
+	this.valid_attributes = ['method'];
+	this.nestables = nestables;
+}
+
+Redirect.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function Speak(Response) {
+	this.element = 'Speak';
+	this.valid_attributes = ['voice', 'language', 'loop'];
+	this.nestables = nestables;
+}
+
+Speak.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function Wait(Response) {
+	this.element = 'Wait';
+	this.valid_attributes = ['length', 'silence'];
+	this.nestables = nestables;
+}
+
+Wait.prototype.init = function( body, attributes) {
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+function DTMF(Response) {
+	this.element = 'DTMF';
+	this.valid_attributes = [];
+	this.nestables = nestables;
+}
+
+DTMF.prototype.init = function( body, attributes) {
+	if (body == null) {
+		PlivoError('No text set for %s', this.name);
+	}
+	Response.prototype.init(this.element, body, attributes, valid_attributes);
+};
+
+util.inherits(Conference, Response);
+util.inherits(Dial, Response);
+util.inherits(GetDigits, Response);
+util.inherits(Hangup, Response);
+util.inherits(Message, Response);
+util.inherits(Play, Response);
+util.inherits(PreAnswer, Response);
+util.inherits(Record, Response);
+util.inherits(Redirect, Response);
+util.inherits(Speak, Response);
+util.inherits(Wait, Response);
+util.inherits(DTMF, Response);
 
 exports.Response = function() {
-	return Response;
+	return new Response();
 }
 exports.Plivo = function() {
 	return plivo;
-}
-
-exports.Element = function() {
-	return Element;
 }
