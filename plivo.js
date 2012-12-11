@@ -685,6 +685,20 @@ Response.prototype = {
 		conference.init(conference.element,body, attributes);
 		return conference;
 	},
+	addNumber : function(body) {
+		var attributes = [];
+		nestables = this.nestables;
+		var number = new Number(Response);
+		number.init(number.element, body, attributes);
+		return number;
+	},
+	addUser : function(body) {
+		var attributes = [];
+		nestables = this.nestables;
+		var user = new User(Response);
+		user.init(user.element, body, attributes);
+		return user;
+	},
 	addDial : function(attributes) {
 		var body = '';
 		var dial = new Dial(Response);
@@ -948,6 +962,8 @@ DTMF.prototype.init = function( body, attributes) {
 };
 
 util.inherits(Conference, Response);
+util.inherits(Number, Response);
+util.inherits(User, Response);
 util.inherits(Dial, Response);
 util.inherits(GetDigits, Response);
 util.inherits(Hangup, Response);
