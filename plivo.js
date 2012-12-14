@@ -697,7 +697,7 @@ Response.prototype = {
 			return number;
     	}
     	else {
-    		errmsg = 'Number Cannot be nested under response';
+    		errmsg = 'Number Cannot be nested under Response';
     	}
 	},
 	addUser : function(body) {
@@ -710,7 +710,7 @@ Response.prototype = {
 			return user;
     	}
     	else {
-    		errmsg = 'User Cannot be nested under response';
+    		errmsg = 'User Cannot be nested under Response';
     	}
 	},
 	addDial : function(attributes) {
@@ -831,11 +831,11 @@ Response.prototype = {
 function Conference(Response) {
 	this.element = 'Conference';
 	this.valid_attributes = ['muted','beep','startConferenceOnEnter', 'endConferenceOnExit',
-						'waitSound','enterSound', 'exitSound', 'timeLimit', 'hangupOnStar', 
-						'maxMembers', 'record', 'recordFileFormat', 'action', 'method', 
-						'redirect', 'digitsMatch', 'callbackUrl', 'callbackMethod',
-                        'stayAlone', 'floorEvent', 'transcriptionType', 'transcriptionUrl',
-                        'transcriptionMethod'];
+				'waitSound','enterSound', 'exitSound', 'timeLimit', 'hangupOnStar', 
+				'maxMembers', 'record', 'recordFileFormat', 'action', 'method', 
+				'redirect', 'digitsMatch', 'callbackUrl', 'callbackMethod',
+                       	        'stayAlone', 'floorEvent', 'transcriptionType', 'transcriptionUrl',
+                      	        'transcriptionMethod'];
 }
 
 Message.prototype.init = function( body, attributes) {
@@ -871,10 +871,10 @@ User.prototype.init = function( body, attributes) {
 function Dial(Response) {
 	this.element = 'Dial';
 	this.valid_attributes = ['action','method','timeout','hangupOnStar', 'timeLimit',
-						'callerId', 'callerName', 'confirmSound', 'dialMusic', 
-						'confirmKey', 'redirect', 'callbackUrl', 'callbackMethod', 
-						'digitsMatch', 'sipHeaders'];
-    this.nestables = ['Number', 'User'];
+				'callerId', 'callerName', 'confirmSound', 'dialMusic', 
+				'confirmKey', 'redirect', 'callbackUrl', 'callbackMethod', 
+				'digitsMatch', 'sipHeaders'];
+        this.nestables = ['Number', 'User'];
 }
 
 Dial.prototype.init = function(body, attributes) {
@@ -885,9 +885,9 @@ Dial.prototype.init = function(body, attributes) {
 function GetDigits(Response) {
 	this.element = 'GetDigits';
 	this.valid_attributes = ['action', 'method', 'timeout', 'digitTimeout', 'finishOnKey',
-                        'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
-                        'playBeep', 'redirect', 'digitTimeout'];
-    this.nestables = ['Speak','Play','Wait'];
+        	                'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
+                	        'playBeep', 'redirect', 'digitTimeout'];
+        this.nestables = ['Speak','Play','Wait'];
 }
 
 GetDigits.prototype.init = function(body, attributes) {
@@ -931,7 +931,7 @@ Play.prototype.init = function( body, attributes) {
 function PreAnswer(Response) {
 	this.element = 'PreAnswer';
 	this.valid_attributes = [];
-    this.nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message', 'DTMF'];
+        this.nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message', 'DTMF'];
 }
 
 PreAnswer.prototype.init = function(body, attributes) {
@@ -942,10 +942,10 @@ PreAnswer.prototype.init = function(body, attributes) {
 function Record(Response) {
 	this.element = 'Record';
 	this.valid_attributes = ['action', 'method', 'timeout','finishOnKey',
-                        'maxLength', 'playBeep', 'recordSession',
-                        'startOnDialAnswer', 'redirect', 'fileFormat',
-                        'callbackUrl', 'callbackMethod', 'transcriptionType', 
-                        'transcriptionUrl', 'transcriptionMethod'];
+    		                'maxLength', 'playBeep', 'recordSession',
+                	        'startOnDialAnswer', 'redirect', 'fileFormat',
+                       	        'callbackUrl', 'callbackMethod', 'transcriptionType', 
+                                'transcriptionUrl', 'transcriptionMethod'];
 }
 
 Record.prototype.init = function( body, attributes) {
