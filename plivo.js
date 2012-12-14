@@ -643,11 +643,10 @@ plivo.get_message = function (params, callback) {
 // XML Generation.....
 GLOBAL.Docs = doc.begin('Response');
 
-// Decalaring a class Element
+// Decalaring a class Response
 function Response() {
 	this.nestables = [];
 	valid_attributes = [];
-	nestName = '';
 	elem = '';
 	errmsg = '';
 };
@@ -660,8 +659,8 @@ Response.prototype = {
 		this.elem = '';
 
 	   	if (nestables.indexOf(this.name)>-1) {
-    		this.elem.parent = elem;
-			this.elem = elem.ele(this.name)
+	   		this.elem.parent = elem;
+    		this.elem = elem.ele(this.name)
      	}
      	else {
        		this.elem = Docs.ele(this.name)
@@ -680,42 +679,65 @@ Response.prototype = {
 	},
 
 	addConference: function(body, attributes) {
+		if(this.nestables.indexOf('Conference')>-1) {
+			elem = this.elem;
+    	}
 		nestables = this.nestables;
 		var conference = new Conference(Response);
 		conference.init(conference.element,body, attributes);
 		return conference;
 	},
 	addNumber : function(body) {
-		var attributes = [];
-		nestables = this.nestables;
-		var number = new Number(Response);
-		number.init(number.element, body, attributes);
-		return number;
+		if(this.nestables.indexOf('Number')>-1) {
+			elem = this.elem;
+			var attributes = [];
+			nestables = this.nestables;
+			var number = new Number(Response);
+			number.init(number.element, body, attributes);
+			return number;
+    	}
+    	else {
+    		errmsg = 'Number Cannot be nested under response';
+    	}
 	},
 	addUser : function(body) {
-		var attributes = [];
-		nestables = this.nestables;
-		var user = new User(Response);
-		user.init(user.element, body, attributes);
-		return user;
+		if(this.nestables.indexOf('User')>-1) {
+			elem = this.elem;
+			var attributes = [];
+			nestables = this.nestables;
+			var user = new User(Response);
+			user.init(user.element, body, attributes);
+			return user;
+    	}
+    	else {
+    		errmsg = 'User Cannot be nested under response';
+    	}
+		
 	},
 	addDial : function(attributes) {
+		if(this.nestables.indexOf('Dial')>-1) {
+			elem = this.elem;
+    	}
 		var body = '';
 		nestables = this.nestables;
 		var dial = new Dial(Response);
 		dial.init(dial.element, body, attributes);
-		elem=dial.elem;
 		return dial;
 	},
 	addGetDigits : function(attributes) {
+		if(this.nestables.indexOf('GetDigits')>-1) {
+			elem = this.elem;
+		}
 		var body = '';
 		nestables = this.nestables;
 		var getDigits = new GetDigits(Response);
 		getDigits.init(getDigits.element, body, attributes);
-		elem=getDigits.elem;
 		return getDigits;
 	},
 	addHangup : function(attributes) {
+		if(this.nestables.indexOf('Hangup')>-1) {
+			elem = this.elem;
+    	}
 		var body = '';
 		nestables = this.nestables;
 		var hangup = new Hangup(Response);
@@ -723,27 +745,38 @@ Response.prototype = {
 		return hangup;
 	},
 	addMessage: function(body, attributes) {
+		if(this.nestables.indexOf('Message')>-1) {
+			elem = this.elem;
+    	}
 		nestables = this.nestables;
 		var message = new Message(Response);
 		message.init(message.element,body, attributes);
 		return message;
 	},
 	addPlay: function(body, attributes) {
+		if(this.nestables.indexOf('Play')>-1) {
+			elem = this.elem;
+    	}
 		nestables = this.nestables;
 		var play = new Play(Response);
 		play.init(play.element,body, attributes);
 		return play;
 	},
 	addPreAnswer : function(body, attributes) {
+		if(this.nestables.indexOf('PreAnswer')>-1) {
+			elem = this.elem;
+    	}
 		var body = '';
 		var attributes = [];
 		nestables = this.nestables;
 		var preAnswer = new PreAnswer(Response);
 		preAnswer.init(preAnswer.element,body, attributes);
-		elem=preAnswer.elem;
 		return preAnswer;
 	},
 	addRecord : function(body, attributes) {
+		if(this.nestables.indexOf('Record')>-1) {
+			elem = this.elem;
+    	}
 		var body = '';
 		nestables = this.nestables;
 		var record = new Record(Response);
@@ -751,18 +784,27 @@ Response.prototype = {
 		return record;
 	},
 	addRedirect : function(body, attributes) {
+		if(this.nestables.indexOf('Redirect')>-1) {
+			elem = this.elem;
+    	}
 		nestables = this.nestables;
 		var redirect = new Redirect(Response);
 		redirect.init(redirect.element,body, attributes);
 		return redirect;
 	},
 	addSpeak : function(body, attributes) {
+		if(this.nestables.indexOf('Speak')>-1) {
+			elem = this.elem;
+    	}
 		nestables = this.nestables;
 		var speak = new Speak(Response);
 		speak.init(speak.element,body, attributes);
 		return speak;
 	},
 	addWait : function(attributes) {
+		if(this.nestables.indexOf('Wait')>-1) {
+			elem = this.elem;
+    	}
 		var body = '';
 		nestables = this.nestables;
 		var wait = new Wait(Response);
@@ -770,6 +812,9 @@ Response.prototype = {
 		return wait;
 	},
 	addDTMF : function(body) {
+		if(this.nestables.indexOf('DTMF')>-1) {
+			elem = this.elem;
+    	}
 		var attributes = [];
 		nestables = this.nestables;
 		var dtmf = new DTMF(Response);
@@ -792,7 +837,6 @@ function Conference(Response) {
 						'redirect', 'digitsMatch', 'callbackUrl', 'callbackMethod',
                         'stayAlone', 'floorEvent', 'transcriptionType', 'transcriptionUrl',
                         'transcriptionMethod'];
-	this.nestables = nestables;
 }
 
 Message.prototype.init = function( body, attributes) {
@@ -805,7 +849,6 @@ Message.prototype.init = function( body, attributes) {
 function Number(Response) {
 	this.element = 'Number';
 	this.valid_attributes = ['sendDigits', 'sendOnPreanswer'];
-	this.nestables = nestables;
 }
 
 Number.prototype.init = function( body, attributes) {
@@ -817,7 +860,6 @@ Number.prototype.init = function( body, attributes) {
 function User(Response) {
 	this.element = 'User';
 	this.valid_attributes = ['sendDigits', 'sendOnPreanswer', 'sipHeaders', 'webrtc'];
-	this.nestables = nestables;
 }
 
 User.prototype.init = function( body, attributes) {
@@ -834,6 +876,7 @@ function Dial(Response) {
 						'confirmKey', 'redirect', 'callbackUrl', 'callbackMethod', 
 						'digitsMatch', 'sipHeaders'];
     this.nestables = ['Number', 'User'];
+    nestables= this.nestables;
 }
 
 Dial.prototype.init = function(body, attributes) {
@@ -847,6 +890,7 @@ function GetDigits(Response) {
                         'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
                         'playBeep', 'redirect', 'digitTimeout'];
     this.nestables = ['Speak','Play','Wait'];
+    nestables = this.nestables;
 }
 
 GetDigits.prototype.init = function(body, attributes) {
@@ -857,7 +901,6 @@ GetDigits.prototype.init = function(body, attributes) {
 function Hangup(Response) {
 	this.element = 'Hangup';
 	this.valid_attributes = ['schedule', 'reason'];
-	this.nestables = nestables;
 }
 
 Hangup.prototype.init = function( body, attributes) {
@@ -867,7 +910,6 @@ Hangup.prototype.init = function( body, attributes) {
 function Message(Response) {
 	this.element = 'Message';
 	this.valid_attributes = ['src', 'dst', 'type', 'callbackUrl', 'callbackMethod'];
-	this.nestables = nestables;
 }
 
 Message.prototype.init = function( body, attributes) {
@@ -880,7 +922,6 @@ Message.prototype.init = function( body, attributes) {
 function Play(Response) {
 	this.element = 'Play';
 	this.valid_attributes = ['loop'];
-	this.nestables = nestables;
 }
 
 Play.prototype.init = function( body, attributes) {
@@ -894,6 +935,7 @@ function PreAnswer(Response) {
 	this.element = 'PreAnswer';
 	this.valid_attributes = [];
     this.nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message', 'DTMF'];
+    nestables= this.nestables;
 }
 
 PreAnswer.prototype.init = function(body, attributes) {
@@ -908,7 +950,6 @@ function Record(Response) {
                         'startOnDialAnswer', 'redirect', 'fileFormat',
                         'callbackUrl', 'callbackMethod', 'transcriptionType', 
                         'transcriptionUrl', 'transcriptionMethod'];
-	this.nestables = nestables;
 }
 
 Record.prototype.init = function( body, attributes) {
@@ -918,7 +959,6 @@ Record.prototype.init = function( body, attributes) {
 function Redirect(Response) {
 	this.element = 'Redirect';
 	this.valid_attributes = ['method'];
-	this.nestables = nestables;
 }
 
 Redirect.prototype.init = function( body, attributes) {
@@ -931,7 +971,7 @@ Redirect.prototype.init = function( body, attributes) {
 function Speak(Response) {
 	this.element = 'Speak';
 	this.valid_attributes = ['voice', 'language', 'loop'];
-	this.nestables = nestables;
+//	nestables= this.nestables;
 }
 
 Speak.prototype.init = function( body, attributes) {
@@ -944,7 +984,6 @@ Speak.prototype.init = function( body, attributes) {
 function Wait(Response) {
 	this.element = 'Wait';
 	this.valid_attributes = ['length', 'silence'];
-	this.nestables = nestables;
 }
 
 Wait.prototype.init = function( body, attributes) {
@@ -954,7 +993,6 @@ Wait.prototype.init = function( body, attributes) {
 function DTMF(Response) {
 	this.element = 'DTMF';
 	this.valid_attributes = [];
-	this.nestables = nestables;
 }
 
 DTMF.prototype.init = function( body, attributes) {
