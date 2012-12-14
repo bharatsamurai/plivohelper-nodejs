@@ -671,7 +671,7 @@ Response.prototype = {
 		for (var i=0; i<keys.length; i++) {
 			if (this.valid_attributes.indexOf(keys[i]) == -1) {
 				errmsg = 'Not a valid attribute : "' +  keys[i] + '"  for "' + this.name + '" Element';
-				return console.log('Not a valid attribute, %s', keys[i]);
+				return errmsg;
 			}
      		this.elem.att(keys[i],attributes[keys[i]])
      	}	
@@ -712,7 +712,6 @@ Response.prototype = {
     	else {
     		errmsg = 'User Cannot be nested under response';
     	}
-		
 	},
 	addDial : function(attributes) {
 		if(this.nestables.indexOf('Dial')>-1) {
@@ -876,7 +875,6 @@ function Dial(Response) {
 						'confirmKey', 'redirect', 'callbackUrl', 'callbackMethod', 
 						'digitsMatch', 'sipHeaders'];
     this.nestables = ['Number', 'User'];
-    nestables= this.nestables;
 }
 
 Dial.prototype.init = function(body, attributes) {
@@ -890,7 +888,6 @@ function GetDigits(Response) {
                         'numDigits', 'retries', 'invalidDigitsSound', 'validDigits', 
                         'playBeep', 'redirect', 'digitTimeout'];
     this.nestables = ['Speak','Play','Wait'];
-    nestables = this.nestables;
 }
 
 GetDigits.prototype.init = function(body, attributes) {
@@ -935,7 +932,6 @@ function PreAnswer(Response) {
 	this.element = 'PreAnswer';
 	this.valid_attributes = [];
     this.nestables = ['Play', 'Speak', 'GetDigits', 'Wait', 'Redirect', 'Message', 'DTMF'];
-    nestables= this.nestables;
 }
 
 PreAnswer.prototype.init = function(body, attributes) {
