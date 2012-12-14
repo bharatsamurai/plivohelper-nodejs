@@ -971,7 +971,6 @@ Redirect.prototype.init = function( body, attributes) {
 function Speak(Response) {
 	this.element = 'Speak';
 	this.valid_attributes = ['voice', 'language', 'loop'];
-//	nestables= this.nestables;
 }
 
 Speak.prototype.init = function( body, attributes) {
